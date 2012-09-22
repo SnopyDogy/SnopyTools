@@ -31,6 +31,11 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.FontPictureBox = new System.Windows.Forms.PictureBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.TextColorButton = new System.Windows.Forms.Button();
+            this.MonoSpacedCheckBox = new System.Windows.Forms.CheckBox();
+            this.FontDataExprotButton = new System.Windows.Forms.Button();
+            this.GenFontBitmapButton = new System.Windows.Forms.Button();
             this.FontComboBox = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.StyleComboBox = new System.Windows.Forms.ComboBox();
@@ -42,8 +47,7 @@
             this.AACheckBox = new System.Windows.Forms.CheckBox();
             this.MaxCharTextBox = new System.Windows.Forms.TextBox();
             this.MinCharTextBox = new System.Windows.Forms.TextBox();
-            this.GenFontBitmapButton = new System.Windows.Forms.Button();
-            this.FontDataExprotButton = new System.Windows.Forms.Button();
+            this.ColorDialog = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -67,6 +71,9 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.label5);
+            this.splitContainer1.Panel2.Controls.Add(this.TextColorButton);
+            this.splitContainer1.Panel2.Controls.Add(this.MonoSpacedCheckBox);
             this.splitContainer1.Panel2.Controls.Add(this.FontDataExprotButton);
             this.splitContainer1.Panel2.Controls.Add(this.GenFontBitmapButton);
             this.splitContainer1.Panel2.Controls.Add(this.FontComboBox);
@@ -108,6 +115,57 @@
             this.FontPictureBox.TabStop = false;
             this.FontPictureBox.Click += new System.EventHandler(this.FontPictureBox_Click);
             this.FontPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.FontPictureBox_Paint);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(549, 51);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Text Color";
+            // 
+            // TextColorButton
+            // 
+            this.TextColorButton.BackColor = System.Drawing.Color.White;
+            this.TextColorButton.Location = new System.Drawing.Point(610, 46);
+            this.TextColorButton.Name = "TextColorButton";
+            this.TextColorButton.Size = new System.Drawing.Size(28, 23);
+            this.TextColorButton.TabIndex = 20;
+            this.TextColorButton.UseVisualStyleBackColor = false;
+            this.TextColorButton.Click += new System.EventHandler(this.TextColorButton_Click);
+            // 
+            // MonoSpacedCheckBox
+            // 
+            this.MonoSpacedCheckBox.AutoSize = true;
+            this.MonoSpacedCheckBox.Checked = true;
+            this.MonoSpacedCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MonoSpacedCheckBox.Location = new System.Drawing.Point(543, 30);
+            this.MonoSpacedCheckBox.Name = "MonoSpacedCheckBox";
+            this.MonoSpacedCheckBox.Size = new System.Drawing.Size(84, 17);
+            this.MonoSpacedCheckBox.TabIndex = 19;
+            this.MonoSpacedCheckBox.Text = "MonoSpace";
+            this.MonoSpacedCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // FontDataExprotButton
+            // 
+            this.FontDataExprotButton.Location = new System.Drawing.Point(692, 8);
+            this.FontDataExprotButton.Name = "FontDataExprotButton";
+            this.FontDataExprotButton.Size = new System.Drawing.Size(114, 23);
+            this.FontDataExprotButton.TabIndex = 18;
+            this.FontDataExprotButton.Text = "Export Font Data";
+            this.FontDataExprotButton.UseVisualStyleBackColor = true;
+            this.FontDataExprotButton.Click += new System.EventHandler(this.FontDataExprotButton_Click);
+            // 
+            // GenFontBitmapButton
+            // 
+            this.GenFontBitmapButton.Location = new System.Drawing.Point(341, 24);
+            this.GenFontBitmapButton.Name = "GenFontBitmapButton";
+            this.GenFontBitmapButton.Size = new System.Drawing.Size(196, 23);
+            this.GenFontBitmapButton.TabIndex = 17;
+            this.GenFontBitmapButton.Text = "Gen Font Bitmap";
+            this.GenFontBitmapButton.UseVisualStyleBackColor = true;
+            this.GenFontBitmapButton.Click += new System.EventHandler(this.GenFontBitmapButton_Click);
             // 
             // FontComboBox
             // 
@@ -222,7 +280,7 @@
             this.AACheckBox.AutoSize = true;
             this.AACheckBox.Checked = true;
             this.AACheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AACheckBox.Location = new System.Drawing.Point(341, 26);
+            this.AACheckBox.Location = new System.Drawing.Point(543, 7);
             this.AACheckBox.Name = "AACheckBox";
             this.AACheckBox.Size = new System.Drawing.Size(77, 17);
             this.AACheckBox.TabIndex = 8;
@@ -245,25 +303,9 @@
             this.MinCharTextBox.TabIndex = 6;
             this.MinCharTextBox.Text = "0x20";
             // 
-            // GenFontBitmapButton
+            // ColorDialog
             // 
-            this.GenFontBitmapButton.Location = new System.Drawing.Point(425, 24);
-            this.GenFontBitmapButton.Name = "GenFontBitmapButton";
-            this.GenFontBitmapButton.Size = new System.Drawing.Size(112, 23);
-            this.GenFontBitmapButton.TabIndex = 17;
-            this.GenFontBitmapButton.Text = "Gen Font Bitmap";
-            this.GenFontBitmapButton.UseVisualStyleBackColor = true;
-            this.GenFontBitmapButton.Click += new System.EventHandler(this.GenFontBitmapButton_Click);
-            // 
-            // FontDataExprotButton
-            // 
-            this.FontDataExprotButton.Location = new System.Drawing.Point(692, 8);
-            this.FontDataExprotButton.Name = "FontDataExprotButton";
-            this.FontDataExprotButton.Size = new System.Drawing.Size(114, 23);
-            this.FontDataExprotButton.TabIndex = 18;
-            this.FontDataExprotButton.Text = "Export Font Data";
-            this.FontDataExprotButton.UseVisualStyleBackColor = true;
-            this.FontDataExprotButton.Click += new System.EventHandler(this.FontDataExprotButton_Click);
+            this.ColorDialog.SolidColorOnly = true;
             // 
             // MainForm
             // 
@@ -305,6 +347,10 @@
         private System.Windows.Forms.ComboBox StyleComboBox;
         private System.Windows.Forms.Button GenFontBitmapButton;
         private System.Windows.Forms.Button FontDataExprotButton;
+        private System.Windows.Forms.CheckBox MonoSpacedCheckBox;
+        private System.Windows.Forms.ColorDialog ColorDialog;
+        private System.Windows.Forms.Button TextColorButton;
+        private System.Windows.Forms.Label label5;
     }
 }
 

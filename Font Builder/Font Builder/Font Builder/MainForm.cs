@@ -272,7 +272,7 @@ namespace Font_Builder
 
                 graphics.Clear(Color.Transparent);
 
-                using (Brush brush = new SolidBrush(Color.White))
+                using (Brush brush = new SolidBrush(TextColorButton.BackColor))
                 using (StringFormat format = new StringFormat())
                 {
                     format.Alignment = StringAlignment.Near;
@@ -282,6 +282,11 @@ namespace Font_Builder
                 }
 
                 graphics.Flush();
+            }
+
+            if (MonoSpacedCheckBox.Checked)
+            {
+                return bitmap;
             }
 
             return CropCharacter(bitmap);
@@ -411,6 +416,14 @@ namespace Font_Builder
                 StreamWriter writer = new StreamWriter(fileSelector.FileName);
                 ser.Serialize(writer, oFontData);
                 writer.Close();
+            }
+        }
+
+        private void TextColorButton_Click(object sender, EventArgs e)
+        {
+            if (ColorDialog.ShowDialog() == DialogResult.OK)
+            {
+                TextColorButton.BackColor = ColorDialog.Color;
             }
         }
     }
