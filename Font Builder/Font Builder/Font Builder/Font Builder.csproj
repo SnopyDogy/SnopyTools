@@ -10,15 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Font_Builder</RootNamespace>
     <AssemblyName>Font Builder</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -27,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -44,9 +42,30 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>References\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Font.cs" />
+    <Compile Include="FontBuilderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FontBuilderForm.Designer.cs">
+      <DependentUpon>FontBuilderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FontCreationControls.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FontCreationControls.Designer.cs">
+      <DependentUpon>FontCreationControls.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FontTextureControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FontTextureControl.Designer.cs">
+      <DependentUpon>FontTextureControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +74,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FontBuilderForm.resx">
+      <DependentUpon>FontBuilderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FontCreationControls.resx">
+      <DependentUpon>FontCreationControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FontTextureControl.resx">
+      <DependentUpon>FontTextureControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
