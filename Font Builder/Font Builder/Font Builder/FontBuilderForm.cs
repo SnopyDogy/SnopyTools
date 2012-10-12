@@ -71,6 +71,7 @@ namespace Font_Builder
             m_oControlsPanel.FontDataExportButton.Click += new EventHandler(FontDataExportButton_Click);
             m_oControlsPanel.GenFontTextureButton.Click += new EventHandler(GenFontTextureButton_Click);
             m_oTexturePanel.FontPictureBox.Paint += new PaintEventHandler(FontPictureBox_Paint);
+            m_oUVCoordsPanel.UVCoordsListBox.SelectedIndexChanged += new EventHandler(UVCoordsListBox_SelectedIndexChanged);
         }
 
         #region EventHandlers
@@ -87,22 +88,27 @@ namespace Font_Builder
 
         private void FontComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectionChanged();
+            FontSelectionChanged();
         }
 
         private void StyleComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectionChanged();
+            FontSelectionChanged();
         }
 
         private void SizeComboBox_TextUpdate(object sender, EventArgs e)
         {
-            SelectionChanged();
+            FontSelectionChanged();
         }
 
         private void SizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectionChanged();
+            FontSelectionChanged();
+        }
+
+        void UVCoordsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_oTexturePanel.FontPictureBox.Invalidate();
         }
 
         private void FontPictureBox_Paint(object sender, PaintEventArgs e)
@@ -112,13 +118,24 @@ namespace Font_Builder
                 return;
             }
 
+            System.Drawing.Pen oHighlightPen = new Pen(Color.Yellow);
+            oHighlightPen.Width = 2;
+
             foreach (Character oChar in m_oFontData.Characters)
             {
                 Rectangle oRect = new Rectangle((int)(oChar.Umin * m_oTexturePanel.FontPictureBox.Width),
                                                 (int)(oChar.Vmin * m_oTexturePanel.FontPictureBox.Height),
                                                 (int)(oChar.Umax * m_oTexturePanel.FontPictureBox.Width) - (int)(oChar.Umin * m_oTexturePanel.FontPictureBox.Width),
                                                 (int)(oChar.Vmax * m_oTexturePanel.FontPictureBox.Height) - (int)(oChar.Vmin * m_oTexturePanel.FontPictureBox.Height));
-                e.Graphics.DrawRectangle(System.Drawing.Pens.AntiqueWhite, oRect);
+                if (oChar != m_oUVCoordsPanel.UVCoordsListBox.SelectedItem)
+                {
+                    e.Graphics.DrawRectangle(System.Drawing.Pens.White, oRect);
+                }
+                else
+                {
+                    // draw the selected item as yesllow:
+                    e.Graphics.DrawRectangle(oHighlightPen, oRect);
+                }
             }
         }
 
@@ -149,9 +166,6 @@ namespace Font_Builder
             // Create New Font Class
             m_oFontData = new Font_Builder.Font();
 
-            // bind Font Class to Controls
-            m_oUVCoordsPanel.DataSource = m_oFontData;
-
             try
             {
                 // If the current font is invalid, report that to the user.
@@ -176,7 +190,7 @@ namespace Font_Builder
 
                 fileSelector.Title = "Export Font";
                 fileSelector.DefaultExt = "bmp";
-                fileSelector.Filter = "Image files (*.bmp)|*.bmp|All files (*.*)|*.*";
+                fileSelector.Filter = "PNG Files (*.png)|*.png|All files (*.*)|*.*";
 
                 if (fileSelector.ShowDialog() == DialogResult.OK)
                 {
@@ -232,12 +246,16 @@ namespace Font_Builder
                             m_oFontData.Characters.Add(oCharacter);
                         }
 
+                        // Make sure our texture is sized to a power of 2:
+                        width = NextPowOf2(width);
+                        height = NextPowOf2(height);
+
                         Bitmap tempBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
                         // Arrage all the glyphs onto a single larger bitmap.
                         Graphics graphics = Graphics.FromImage(tempBitmap);
 
-                        graphics.Clear(Color.MidnightBlue);
+                        graphics.Clear(Color.Transparent);
                         graphics.CompositingMode = CompositingMode.SourceCopy;
 
                         for (int i = 0; i < bitmaps.Count; i++)
@@ -252,10 +270,19 @@ namespace Font_Builder
                         m_oFontData.ConvertUVCoords(tempBitmap.Width, tempBitmap.Height);
 
                         // Save out the combined bitmap.
-                        tempBitmap.Save(fileSelector.FileName, ImageFormat.Bmp);
+                        ImageCodecInfo PngEncoder = PngEncoder = ImageCodecInfo.GetImageEncoders()[4]; // Built-in PNG Codec
+                        System.Drawing.Imaging.Encoder PngEncoderQL = System.Drawing.Imaging.Encoder.Quality;
+                        EncoderParameters pngEncoderParameters = new EncoderParameters(1);
+                        EncoderParameter PngEncoderParam = new EncoderParameter(PngEncoderQL, 50L);
+                        pngEncoderParameters.Param[0] = PngEncoderParam;
+
+                        tempBitmap.Save(fileSelector.FileName, PngEncoder, pngEncoderParameters);
                         //set pitcure box to bitmap:
                         //m_oTexturePanel.FontPictureBox.ImageLocation = fileSelector.FileName;
                         m_oTexturePanel.FontPictureBox.Image = tempBitmap;
+
+                        // bind Font Class to Controls
+                        m_oUVCoordsPanel.DataSource = m_oFontData;
                     }
                     finally
                     {
@@ -281,7 +308,7 @@ namespace Font_Builder
         /// instance and update the preview text label.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        void SelectionChanged()
+        void FontSelectionChanged()
         {
             try
             {
@@ -460,6 +487,17 @@ namespace Font_Builder
                 return -1;
 
             return result;
+        }
+
+        private int NextPowOf2(int a_iInput)
+        {
+            int iPowOf2 = 1;
+            while (iPowOf2 < a_iInput)
+            {
+                iPowOf2 = iPowOf2 << 1;
+            }
+
+            return iPowOf2;
         }
 
         #endregion
