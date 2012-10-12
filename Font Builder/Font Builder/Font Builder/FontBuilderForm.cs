@@ -22,12 +22,13 @@ namespace Font_Builder
     {
         FontTextureControl m_oTexturePanel = new FontTextureControl();
         FontCreationControls m_oControlsPanel = new FontCreationControls();
+        UVCoordsControl m_oUVCoordsPanel = new UVCoordsControl();
 
         Bitmap globalBitmap;
         Graphics globalGraphics;
         System.Drawing.Font font;
         string fontError;
-        Font_Builder.Font oFontData;
+        Font_Builder.Font m_oFontData;
 
         public FontBuilderForm()
         {
@@ -47,9 +48,10 @@ namespace Font_Builder
 
         private void FontBuilderForm_Load(object sender, EventArgs e)
         {
-            // Create Docking Panels:
+            // Display Docking Panels:
             m_oTexturePanel.Show(MainDockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
             m_oControlsPanel.Show(MainDockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockBottom);
+            m_oUVCoordsPanel.Show(MainDockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
 
             // Create Bitmap and Graphics for creating Font Texture:
             globalBitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
@@ -105,12 +107,12 @@ namespace Font_Builder
 
         private void FontPictureBox_Paint(object sender, PaintEventArgs e)
         {
-            if (oFontData == null)
+            if (m_oFontData == null)
             {
                 return;
             }
 
-            foreach (Character oChar in oFontData.Characters)
+            foreach (Character oChar in m_oFontData.Characters)
             {
                 Rectangle oRect = new Rectangle((int)(oChar.Umin * m_oTexturePanel.FontPictureBox.Width),
                                                 (int)(oChar.Vmin * m_oTexturePanel.FontPictureBox.Height),
@@ -133,7 +135,7 @@ namespace Font_Builder
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Font_Builder.Font));
                 StreamWriter writer = new StreamWriter(fileSelector.FileName);
-                ser.Serialize(writer, oFontData);
+                ser.Serialize(writer, m_oFontData);
                 writer.Close();
             }
         }
@@ -145,7 +147,10 @@ namespace Font_Builder
         private void GenFontTextureButton_Click(object sender, EventArgs e)
         {
             // Create New Font Class
-            oFontData = new Font_Builder.Font();
+            m_oFontData = new Font_Builder.Font();
+
+            // bind Font Class to Controls
+            m_oUVCoordsPanel.DataSource = m_oFontData;
 
             try
             {
@@ -175,7 +180,7 @@ namespace Font_Builder
 
                 if (fileSelector.ShowDialog() == DialogResult.OK)
                 {
-                    oFontData.Texture = fileSelector.FileName;
+                    m_oFontData.Texture = fileSelector.FileName;
 
                     // Build up a list of all the glyphs to be output.
                     List<Bitmap> bitmaps = new List<Bitmap>();
@@ -224,7 +229,7 @@ namespace Font_Builder
                             }
 
                             // Add char to font data:
-                            oFontData.Characters.Add(oCharacter);
+                            m_oFontData.Characters.Add(oCharacter);
                         }
 
                         Bitmap tempBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
@@ -244,7 +249,7 @@ namespace Font_Builder
                         graphics.Flush();
 
                         //Set Proper UV Coords:
-                        oFontData.ConvertUVCoords(tempBitmap.Width, tempBitmap.Height);
+                        m_oFontData.ConvertUVCoords(tempBitmap.Width, tempBitmap.Height);
 
                         // Save out the combined bitmap.
                         tempBitmap.Save(fileSelector.FileName, ImageFormat.Bmp);
