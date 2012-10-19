@@ -212,7 +212,7 @@ namespace Font_Builder
 
                 if (fileSelector.ShowDialog() == DialogResult.OK)
                 {
-                    m_oFontData.Texture = fileSelector.FileName;
+                    m_oFontData.Texture = "./" + Path.GetFileName(fileSelector.FileName);
 
                     // Build up a list of all the glyphs to be output.
                     List<Bitmap> bitmaps = new List<Bitmap>();
@@ -368,6 +368,33 @@ namespace Font_Builder
         {
             m_fZoom = 12.0f;
             m_oTexturePanel.Repaint();
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileSelector = new OpenFileDialog();
+
+            fileSelector.Title = "Inport Font Data";
+            fileSelector.DefaultExt = "xml";
+            fileSelector.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
+
+            if (fileSelector.ShowDialog() == DialogResult.OK)
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(Font_Builder.Font));
+                FileStream reader = new FileStream(fileSelector.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                // Stream reader = new Stream( //  (fileSelector.FileName);
+                m_oFontData = ser.Deserialize(reader) as Font_Builder.Font;
+                reader.Close();
+
+                // bind Font Class to Controls:
+                m_oUVCoordsPanel.DataSource = m_oFontData;
+
+                // Set Current Directpory to be the Font files location, this allows us to use relative paths:
+                Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(fileSelector.FileName);
+
+                // load Image:
+                m_oFontTexture = new Bitmap(m_oFontData.Texture);
+            }
         }
 
         #endregion
