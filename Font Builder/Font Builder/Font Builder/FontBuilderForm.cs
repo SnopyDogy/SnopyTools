@@ -30,6 +30,12 @@ namespace Font_Builder
         string fontError;
         Font_Builder.Font m_oFontData;
 
+        float m_fZoom = 1;
+        float m_fOffsetX = 0;
+        float m_fOffsetY = 0;
+
+        Bitmap m_oFontTexture;
+
         public FontBuilderForm()
         {
             InitializeComponent();
@@ -71,6 +77,7 @@ namespace Font_Builder
             m_oControlsPanel.FontDataExportButton.Click += new EventHandler(FontDataExportButton_Click);
             m_oControlsPanel.GenFontTextureButton.Click += new EventHandler(GenFontTextureButton_Click);
             m_oTexturePanel.FontPictureBox.Paint += new PaintEventHandler(FontPictureBox_Paint);
+            //m_oTexturePanel.FontPaintPanel.Paint += new PaintEventHandler(FontPictureBox_Paint);
             m_oUVCoordsPanel.UVCoordsListBox.SelectedIndexChanged += new EventHandler(UVCoordsListBox_SelectedIndexChanged);
         }
 
@@ -108,25 +115,36 @@ namespace Font_Builder
 
         void UVCoordsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_oTexturePanel.FontPictureBox.Invalidate();
+            m_oTexturePanel.Repaint();
         }
 
         private void FontPictureBox_Paint(object sender, PaintEventArgs e)
         {
-            if (m_oFontData == null)
+            // safty check:
+            if (m_oFontData == null || m_oFontTexture == null)
             {
                 return;
             }
 
             System.Drawing.Pen oHighlightPen = new Pen(Color.Yellow);
-            oHighlightPen.Width = 2;
+            if (m_fZoom < 1)
+            {
+                oHighlightPen.Width = 2;
+            }
+            
+            // draw the image at the correct position:
+            e.Graphics.DrawImage(   m_oFontTexture, 
+                                    m_fOffsetX, m_fOffsetY, 
+                                    m_oFontTexture.Width * m_fZoom, 
+                                    m_oFontTexture.Height * m_fZoom); 
 
+            // go through and draw the rectangles:
             foreach (Character oChar in m_oFontData.Characters)
             {
-                Rectangle oRect = new Rectangle((int)(oChar.Umin * m_oTexturePanel.FontPictureBox.Width),
-                                                (int)(oChar.Vmin * m_oTexturePanel.FontPictureBox.Height),
-                                                (int)(oChar.Umax * m_oTexturePanel.FontPictureBox.Width) - (int)(oChar.Umin * m_oTexturePanel.FontPictureBox.Width),
-                                                (int)(oChar.Vmax * m_oTexturePanel.FontPictureBox.Height) - (int)(oChar.Vmin * m_oTexturePanel.FontPictureBox.Height));
+                Rectangle oRect = new Rectangle((int)(oChar.Umin * m_oFontTexture.Width * m_fZoom),
+                                                (int)(oChar.Vmin * m_oFontTexture.Height * m_fZoom),
+                                                (int)(oChar.Umax * m_oFontTexture.Width * m_fZoom) - (int)(oChar.Umin * m_oFontTexture.Width * m_fZoom),
+                                                (int)(oChar.Vmax * m_oFontTexture.Height * m_fZoom) - (int)(oChar.Vmin * m_oFontTexture.Height * m_fZoom));
                 if (oChar != m_oUVCoordsPanel.UVCoordsListBox.SelectedItem)
                 {
                     e.Graphics.DrawRectangle(System.Drawing.Pens.White, oRect);
@@ -250,10 +268,10 @@ namespace Font_Builder
                         width = NextPowOf2(width);
                         height = NextPowOf2(height);
 
-                        Bitmap tempBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+                        m_oFontTexture = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
                         // Arrage all the glyphs onto a single larger bitmap.
-                        Graphics graphics = Graphics.FromImage(tempBitmap);
+                        Graphics graphics = Graphics.FromImage(m_oFontTexture);
 
                         graphics.Clear(Color.Transparent);
                         graphics.CompositingMode = CompositingMode.SourceCopy;
@@ -267,7 +285,7 @@ namespace Font_Builder
                         graphics.Flush();
 
                         //Set Proper UV Coords:
-                        m_oFontData.ConvertUVCoords(tempBitmap.Width, tempBitmap.Height);
+                        m_oFontData.ConvertUVCoords(m_oFontTexture.Width, m_oFontTexture.Height);
 
                         // Save out the combined bitmap.
                         ImageCodecInfo PngEncoder = PngEncoder = ImageCodecInfo.GetImageEncoders()[4]; // Built-in PNG Codec
@@ -276,10 +294,10 @@ namespace Font_Builder
                         EncoderParameter PngEncoderParam = new EncoderParameter(PngEncoderQL, 50L);
                         pngEncoderParameters.Param[0] = PngEncoderParam;
 
-                        tempBitmap.Save(fileSelector.FileName, PngEncoder, pngEncoderParameters);
+                        m_oFontTexture.Save(fileSelector.FileName, PngEncoder, pngEncoderParameters);
                         //set pitcure box to bitmap:
                         //m_oTexturePanel.FontPictureBox.ImageLocation = fileSelector.FileName;
-                        m_oTexturePanel.FontPictureBox.Image = tempBitmap;
+                        //m_oTexturePanel.FontPictureBox.Image = m_oFontTexture;
 
                         // update prop values:
                         m_oFontData.UpdateProportions();
@@ -300,6 +318,56 @@ namespace Font_Builder
                 // Report any errors to the user.
                 MessageBox.Show(exception.Message, Text + " Error");
             }
+
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom12p5_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 0.125f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom25_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 0.25f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStriZoom50_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 0.50f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom100_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 1.0f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom200_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 2.0f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom400_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 4.0f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom800_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 8.0f;
+            m_oTexturePanel.Repaint();
+        }
+
+        private void toolStripZoom1200_Click(object sender, EventArgs e)
+        {
+            m_fZoom = 12.0f;
+            m_oTexturePanel.Repaint();
         }
 
         #endregion
