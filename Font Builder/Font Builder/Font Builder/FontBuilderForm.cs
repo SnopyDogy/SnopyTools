@@ -281,6 +281,9 @@ namespace Font_Builder
                         //m_oTexturePanel.FontPictureBox.ImageLocation = fileSelector.FileName;
                         m_oTexturePanel.FontPictureBox.Image = tempBitmap;
 
+                        // update prop values:
+                        m_oFontData.UpdateProportions();
+
                         // bind Font Class to Controls
                         m_oUVCoordsPanel.DataSource = m_oFontData;
                     }
@@ -498,6 +501,38 @@ namespace Font_Builder
             }
 
             return iPowOf2;
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Makes a relative path. </summary>
+        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+        ///                                             null. </exception>
+        /// <param name="fromPath"> Full pathname of from file, the returned path will be relative to this path </param>
+        /// <param name="toPath">   Full pathname of to file, this is the path which will be made relative. </param>
+        /// <returns> a relative path. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static String MakeRelativePath(String fromPath, String toPath)
+        {
+            if (String.IsNullOrEmpty(fromPath)) throw new ArgumentNullException("fromPath");
+            if (String.IsNullOrEmpty(toPath)) throw new ArgumentNullException("toPath");
+
+            try
+            {
+                Uri fromUri = new Uri(fromPath);
+                Uri toUri = new Uri(toPath);
+
+                Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+                return Uri.UnescapeDataString(relativeUri.ToString());
+            }
+            catch /*(System.UriFormatException e)*/
+            {
+                // if there is a format exception in the to or from path then (most likly the to path).
+                // then we will assume that the path is already correct.
+                return toPath;
+            }
+
+            //return relativePath.Replace('/', Path.DirectorySeparatorChar);
         }
 
         #endregion

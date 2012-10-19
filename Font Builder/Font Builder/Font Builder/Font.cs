@@ -40,6 +40,42 @@ namespace Font_Builder
                 Char.Vmax = Char.Vmax / height;
             }
         }
+
+        public void UpdateProportions()
+        {
+            // first find the space character:
+            Character oSpace = null;
+            foreach (Character Char in m_lChars)
+            {
+                if (Char.Char == " ")
+                {
+                    oSpace = Char;
+                    break;
+                }
+            }
+
+            // make space's prop. values = 1:
+            oSpace.XProportion = 1.0f;
+            oSpace.YProportion = 1.0f;
+
+            // create working vars:
+            float fSpaceWidth = oSpace.Umax - oSpace.Umin;
+            float fSpaceHeight = oSpace.Vmax - oSpace.Vmin;
+
+            // now go though the list and update the proportional Values:
+            foreach (Character Char in m_lChars)
+            {
+                // skip space:
+                if (Char == oSpace)
+                {
+                    continue;
+                }
+
+                // update values:
+                Char.XProportion = (Char.Umax - Char.Umin) / fSpaceWidth;
+                Char.YProportion = (Char.Vmax - Char.Vmin) / fSpaceHeight;
+            }
+        }
     }
 
     public class Character
@@ -78,6 +114,20 @@ namespace Font_Builder
         Browsable(true),
         ReadOnly(false)]
         public string Char { get; set; }
+
+        [XmlAttribute("XProportion"),
+        Category("Proportions"),
+        Description("The size of this character in X porportional to the Space character. Space will always be 1"),
+        Browsable(true),
+        ReadOnly(true)]
+        public float XProportion { get; set; }
+
+        [XmlAttribute("YProportion"),
+        Category("Proportions"),
+        Description("The size of this character in Y porportional to the Space character. Space will always be 1"),
+        Browsable(true),
+        ReadOnly(true)]
+        public float YProportion { get; set; }
 
         public Character()
         {
