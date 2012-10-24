@@ -77,6 +77,7 @@ namespace Font_Builder
             m_oControlsPanel.FontDataExportButton.Click += new EventHandler(FontDataExportButton_Click);
             m_oControlsPanel.GenFontTextureButton.Click += new EventHandler(GenFontTextureButton_Click);
             m_oTexturePanel.FontPictureBox.Paint += new PaintEventHandler(FontPictureBox_Paint);
+            m_oTexturePanel.MouseWheel += new MouseEventHandler(FontPictureBox_MouseWheel);
             //m_oTexturePanel.FontPaintPanel.Paint += new PaintEventHandler(FontPictureBox_Paint);
             m_oUVCoordsPanel.UVCoordsListBox.SelectedIndexChanged += new EventHandler(UVCoordsListBox_SelectedIndexChanged);
         }
@@ -115,6 +116,22 @@ namespace Font_Builder
 
         void UVCoordsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            m_oTexturePanel.Repaint();
+        }
+
+        void FontPictureBox_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // modify zoom value on mouse wheel:
+            if (e.Delta >= 120)
+            {
+                m_fZoom += 0.1f;
+            }
+            else if (e.Delta <= -120)
+            {
+                m_fZoom -= 0.1f;
+            }
+
+            // and redraw:
             m_oTexturePanel.Repaint();
         }
 
