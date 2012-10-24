@@ -34,6 +34,11 @@ namespace Font_Builder
         float m_fOffsetX = 0;
         float m_fOffsetY = 0;
 
+        bool m_bPanning = false;
+        int m_iPrevMousePosX = 0;
+        int m_iPrevMousePosY = 0;
+
+
         Bitmap m_oFontTexture;
 
         public FontBuilderForm()
@@ -78,6 +83,9 @@ namespace Font_Builder
             m_oControlsPanel.GenFontTextureButton.Click += new EventHandler(GenFontTextureButton_Click);
             m_oTexturePanel.FontPictureBox.Paint += new PaintEventHandler(FontPictureBox_Paint);
             m_oTexturePanel.MouseWheel += new MouseEventHandler(FontPictureBox_MouseWheel);
+            m_oTexturePanel.FontPictureBox.MouseDown += new MouseEventHandler(FontPictureBox_MouseDown);
+            m_oTexturePanel.FontPictureBox.MouseUp += new MouseEventHandler(m_oTexturePanel_MouseUp);
+            m_oTexturePanel.FontPictureBox.MouseMove += new MouseEventHandler(m_oTexturePanel_MouseMove);
             //m_oTexturePanel.FontPaintPanel.Paint += new PaintEventHandler(FontPictureBox_Paint);
             m_oUVCoordsPanel.UVCoordsListBox.SelectedIndexChanged += new EventHandler(UVCoordsListBox_SelectedIndexChanged);
         }
@@ -135,6 +143,39 @@ namespace Font_Builder
             m_oTexturePanel.Repaint();
         }
 
+        void FontPictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            // on right click save mouse coords
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                m_bPanning = true;
+                m_iPrevMousePosX = e.Location.X;
+                m_iPrevMousePosX = e.Location.Y;
+            }
+        }
+
+        void m_oTexturePanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            // if right click, modify offset.
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                m_fOffsetX += e.Location.X - m_iPrevMousePosX;
+                m_fOffsetY += e.Location.Y - m_iPrevMousePosY;
+
+                m_iPrevMousePosX = e.Location.X;
+                m_iPrevMousePosY = e.Location.Y;
+
+                m_oTexturePanel.Repaint();
+            }
+        }
+
+        void m_oTexturePanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            m_bPanning = false;
+            m_iPrevMousePosX = 0;
+            m_iPrevMousePosY = 0;
+        }
+
         private void FontPictureBox_Paint(object sender, PaintEventArgs e)
         {
             // safty check:
@@ -158,8 +199,8 @@ namespace Font_Builder
             // go through and draw the rectangles:
             foreach (Character oChar in m_oFontData.Characters)
             {
-                Rectangle oRect = new Rectangle((int)(oChar.Umin * m_oFontTexture.Width * m_fZoom),
-                                                (int)(oChar.Vmin * m_oFontTexture.Height * m_fZoom),
+                Rectangle oRect = new Rectangle((int)((oChar.Umin * m_oFontTexture.Width * m_fZoom) + m_fOffsetX),
+                                                (int)((oChar.Vmin * m_oFontTexture.Height * m_fZoom) + m_fOffsetY),
                                                 (int)(oChar.Umax * m_oFontTexture.Width * m_fZoom) - (int)(oChar.Umin * m_oFontTexture.Width * m_fZoom),
                                                 (int)(oChar.Vmax * m_oFontTexture.Height * m_fZoom) - (int)(oChar.Vmin * m_oFontTexture.Height * m_fZoom));
                 if (oChar != m_oUVCoordsPanel.UVCoordsListBox.SelectedItem)
