@@ -149,7 +149,7 @@ namespace Font_Builder
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 m_bPanning = true;
-                Point pCurPos = m_oTexturePanel.FontPictureBox
+                //Point pCurPos = m_oTexturePanel.FontPictureBox
                 m_iPrevMousePosX = e.Location.X;
                 m_iPrevMousePosX = e.Location.Y;
             }
