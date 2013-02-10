@@ -255,8 +255,8 @@ namespace Font_Builder
                 int maxChar = ParseHex(m_oControlsPanel.MaxChar);
 
                 if ((minChar >= maxChar) ||
-                    (minChar < 0) || (minChar > 0xFFFF) ||
-                    (maxChar < 0) || (maxChar > 0xFFFF))
+                    (minChar < 0) || (minChar > 0x00FF) ||
+                    (maxChar < 0) || (maxChar > 0x00FF))
                 {
                     throw new ArgumentException("Invalid character range " +
                                                 m_oControlsPanel.MinChar + " - " + m_oControlsPanel.MaxChar);
@@ -280,59 +280,91 @@ namespace Font_Builder
 
                     try
                     {
-                        const int padding = 8;
-
-                        int width = padding;
-                        int height = padding;
-                        int lineWidth = padding;
-                        int lineHeight = padding;
+                        int padding = Font_Builder.Properties.Settings.Default.BitmatPaddingBetweenChars;
+                        int width = Font_Builder.Properties.Settings.Default.BitmatPaddingBetweenChars;
+                        int height = Font_Builder.Properties.Settings.Default.BitmatPaddingBetweenChars;
+                        int lineWidth = Font_Builder.Properties.Settings.Default.BitmatPaddingBetweenChars;
+                        int lineHeight = Font_Builder.Properties.Settings.Default.BitmatPaddingBetweenChars;
                         int count = 0;
 
                         // Rasterize each character in turn,
                         // and add it to the output list.
                         for (char ch = (char)minChar; ch < maxChar; ch++)
                         {
-                            Bitmap bitmap = RasterizeCharacter(ch);
-                            Character oCharacter = new Character();
-                            oCharacter.Char = ch.ToString();
-
+                            Bitmap bitmap = RasterizeCharacter(ch);   // renders the char to its own small bitmap!
                             bitmaps.Add(bitmap);
 
                             xPositions.Add(lineWidth);
                             yPositions.Add(height);
 
-                            oCharacter.Umin = (float)lineWidth;
-                            oCharacter.Vmin = (float)height;
-                            oCharacter.Umax = (float)(lineWidth + bitmap.Width);
-                            oCharacter.Vmax = (float)(height + bitmap.Height);
+                            Character oCharacter = new Character();
+                            oCharacter.Char = ch.ToString();
 
+                            // note that in windows/.net/directX the we work from top left so lineWidth/height = top left.
+                            // in openGL we work from bottom left, note that this is the default.
+                            if (Font_Builder.Properties.Settings.Default.UVCoordSystem == UV_COORDS_SYSTEMS.DIRECTX)
+                            {
+                                oCharacter.Umin = (float)lineWidth;
+                                oCharacter.Vmax = (float)height;
+                                oCharacter.Umax = (float)(lineWidth + bitmap.Width);
+                                oCharacter.Vmin = (float)(height + bitmap.Height);
+                            }
+                            else
+                            {
+                                oCharacter.Umin = (float)lineWidth;
+                                oCharacter.Vmin = (float)height;
+                                oCharacter.Umax = (float)(lineWidth + bitmap.Width);
+                                oCharacter.Vmax = (float)(height + bitmap.Height);
+                            }
+
+                            // move along to the next Position:
                             lineWidth += bitmap.Width + padding;
                             lineHeight = Math.Max(lineHeight, bitmap.Height + padding);
 
-                            // Output 16 glyphs per line, then wrap to the next line.
-                            if ((++count == 16) || (ch == maxChar - 1))
+                            // wrap depending on stly set in the settings:
+                            if (Font_Builder.Properties.Settings.Default.MaxLineWidthStyle == BITMAP_WIDTH_CAP_STYLE.CAP_BY_NO_OF_PIXELS)
                             {
-                                width = Math.Max(width, lineWidth);
-                                height += lineHeight;
-                                lineWidth = padding;
-                                lineHeight = padding;
-                                count = 0;
+                                // check to see if we are less then the max width + padding current char size (as aprox)  
+                                // if not wrap to next line.
+                                if ((lineWidth + padding + bitmap.Width) > Font_Builder.Properties.Settings.Default.MaxLineWidthInPixels)
+                                {
+                                    width = Math.Max(width, lineWidth);
+                                    height += lineHeight;
+                                    lineWidth = padding;
+                                    lineHeight = padding;
+                                }
+                            }
+                            else
+                            {
+                                // Output 16 glyphs per line, then wrap to the next line.
+                                if ((++count == 16) || (ch == maxChar - 1))
+                                {
+                                    // wrap:
+                                    width = Math.Max(width, lineWidth);
+                                    height += lineHeight;
+                                    lineWidth = padding;
+                                    lineHeight = padding;
+                                    count = 0;
+                                }
                             }
 
                             // Add char to font data:
                             m_oFontData.Characters.Add(oCharacter);
                         }
 
-                        // Make sure our texture is sized to a power of 2:
-                        width = NextPowOf2(width);
-                        height = NextPowOf2(height);
+                        if (Font_Builder.Properties.Settings.Default.PadBitmapToNextPowerOfTwo)
+                        {
+                            // Make sure our texture is sized to a power of 2:
+                            width = NextPowOf2(width);
+                            height = NextPowOf2(height);
+                        }
 
                         m_oFontTexture = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
                         // Arrage all the glyphs onto a single larger bitmap.
                         Graphics graphics = Graphics.FromImage(m_oFontTexture);
 
-                        graphics.Clear(Color.Transparent);
+                        graphics.Clear(Font_Builder.Properties.Settings.Default.BitmapBackgroundColor);
                         graphics.CompositingMode = CompositingMode.SourceCopy;
 
                         for (int i = 0; i < bitmaps.Count; i++)
@@ -342,9 +374,6 @@ namespace Font_Builder
                         }
 
                         graphics.Flush();
-
-                        //Set Proper UV Coords:
-                        m_oFontData.ConvertUVCoords(m_oFontTexture.Width, m_oFontTexture.Height);
 
                         // Save out the combined bitmap.
                         ImageCodecInfo PngEncoder = PngEncoder = ImageCodecInfo.GetImageEncoders()[4]; // Built-in PNG Codec
@@ -358,9 +387,11 @@ namespace Font_Builder
                         //m_oTexturePanel.FontPictureBox.ImageLocation = fileSelector.FileName;
                         //m_oTexturePanel.FontPictureBox.Image = m_oFontTexture;
 
+
+                        //Set Proper UV Coords:
+                        m_oFontData.ConvertUVCoords(m_oFontTexture.Width, m_oFontTexture.Height);
                         // update prop values:
                         m_oFontData.UpdateProportions();
-
                         // bind Font Class to Controls
                         m_oUVCoordsPanel.DataSource = m_oFontData;
                     }
@@ -427,6 +458,18 @@ namespace Font_Builder
         {
             m_fZoom = 12.0f;
             m_oTexturePanel.Repaint();
+        }
+
+        private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Options options = new Options();
+            options.ShowDialog();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About about = new About();
+            about.ShowDialog();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -517,8 +560,10 @@ namespace Font_Builder
         {
             string text = ch.ToString();
 
+            // this calculates the size of the charcter:
             SizeF size = globalGraphics.MeasureString(text, font);
 
+            // this rounds the size up to the nerast Int:
             int width = (int)Math.Ceiling(size.Width);
             int height = (int)Math.Ceiling(size.Height);
 
@@ -536,8 +581,8 @@ namespace Font_Builder
                     graphics.TextRenderingHint =
                         TextRenderingHint.SingleBitPerPixelGridFit;
                 }
-
-                graphics.Clear(Color.Transparent);
+                // mabe make this use a seperate setting???
+                graphics.Clear(Font_Builder.Properties.Settings.Default.BitmapBackgroundColor);
 
                 using (Brush brush = new SolidBrush(m_oControlsPanel.FontColor))
                 using (StringFormat format = new StringFormat())
@@ -551,12 +596,13 @@ namespace Font_Builder
                 graphics.Flush();
             }
 
-            if (m_oControlsPanel.MonoSpace)
+            if (m_oControlsPanel.Crop)
             {
-                return bitmap;
+                // note that the below actually destoryies the spacing built into the font by its designer.
+                return CropCharacter(bitmap);
             }
 
-            return CropCharacter(bitmap);
+            return bitmap;
         }
 
 
@@ -690,5 +736,7 @@ namespace Font_Builder
         }
 
         #endregion
+
+        
     }
 }

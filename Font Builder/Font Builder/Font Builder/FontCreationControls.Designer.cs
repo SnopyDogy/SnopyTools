@@ -33,7 +33,7 @@
             this.m_oSizeComboBox = new System.Windows.Forms.ComboBox();
             this.m_oMinCharTextBox = new System.Windows.Forms.TextBox();
             this.m_oMaxCharTextBox = new System.Windows.Forms.TextBox();
-            this.m_oMonoSpaceCheckBox = new System.Windows.Forms.CheckBox();
+            this.m_oCropCheckBox = new System.Windows.Forms.CheckBox();
             this.m_oAACheckBox = new System.Windows.Forms.CheckBox();
             this.m_oColotButton = new System.Windows.Forms.Button();
             this.m_oGenFontTextureButton = new System.Windows.Forms.Button();
@@ -118,15 +118,15 @@
             this.m_oMaxCharTextBox.TabIndex = 4;
             this.m_oMaxCharTextBox.Text = "0x7F";
             // 
-            // m_oMonoSpaceCheckBox
+            // m_oCropCheckBox
             // 
-            this.m_oMonoSpaceCheckBox.AutoSize = true;
-            this.m_oMonoSpaceCheckBox.Location = new System.Drawing.Point(275, 59);
-            this.m_oMonoSpaceCheckBox.Name = "m_oMonoSpaceCheckBox";
-            this.m_oMonoSpaceCheckBox.Size = new System.Drawing.Size(87, 17);
-            this.m_oMonoSpaceCheckBox.TabIndex = 5;
-            this.m_oMonoSpaceCheckBox.Text = "Mono Space";
-            this.m_oMonoSpaceCheckBox.UseVisualStyleBackColor = true;
+            this.m_oCropCheckBox.AutoSize = true;
+            this.m_oCropCheckBox.Location = new System.Drawing.Point(275, 59);
+            this.m_oCropCheckBox.Name = "m_oCropCheckBox";
+            this.m_oCropCheckBox.Size = new System.Drawing.Size(78, 17);
+            this.m_oCropCheckBox.TabIndex = 5;
+            this.m_oCropCheckBox.Text = "Crop Chars";
+            this.m_oCropCheckBox.UseVisualStyleBackColor = true;
             // 
             // m_oAACheckBox
             // 
@@ -189,9 +189,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(307, 12);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 13);
+            this.label4.Size = new System.Drawing.Size(61, 13);
             this.label4.TabIndex = 12;
-            this.label4.Text = "Font Color";
+            this.label4.Text = "Font Colour";
             // 
             // MinCharLabel
             // 
@@ -252,7 +252,7 @@
             this.Controls.Add(this.m_oGenFontTextureButton);
             this.Controls.Add(this.m_oColotButton);
             this.Controls.Add(this.m_oAACheckBox);
-            this.Controls.Add(this.m_oMonoSpaceCheckBox);
+            this.Controls.Add(this.m_oCropCheckBox);
             this.Controls.Add(this.m_oMaxCharTextBox);
             this.Controls.Add(this.m_oMinCharTextBox);
             this.Controls.Add(this.m_oSizeComboBox);
@@ -277,7 +277,7 @@
         private System.Windows.Forms.ComboBox m_oSizeComboBox;
         private System.Windows.Forms.TextBox m_oMinCharTextBox;
         private System.Windows.Forms.TextBox m_oMaxCharTextBox;
-        private System.Windows.Forms.CheckBox m_oMonoSpaceCheckBox;
+        private System.Windows.Forms.CheckBox m_oCropCheckBox;
         private System.Windows.Forms.CheckBox m_oAACheckBox;
         private System.Windows.Forms.Button m_oColotButton;
         private System.Windows.Forms.Button m_oGenFontTextureButton;

@@ -63,11 +63,11 @@ namespace Font_Builder
             }
         }
 
-        public bool MonoSpace
+        public bool Crop
         {
             get
             {
-                return m_oMonoSpaceCheckBox.Checked;
+                return m_oCropCheckBox.Checked;
             }
         }
 
@@ -114,6 +114,9 @@ namespace Font_Builder
             {
                 this.AllowEndUserDocking = false;
             }
+
+            m_oColorDialog.SolidColorOnly = false;
+            m_oColorDialog.AnyColor = true;
         }
 
         private void m_oColotButton_Click(object sender, EventArgs e)

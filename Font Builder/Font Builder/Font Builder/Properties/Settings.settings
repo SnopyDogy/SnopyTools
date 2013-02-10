@@ -1,7 +1,27 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Font_Builder.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="BitmatPaddingBetweenChars" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="UVCoordSystem" Type="Font_Builder.UV_COORDS_SYSTEMS" Scope="User">
+      <Value Profile="(Default)">OPENGL</Value>
+    </Setting>
+    <Setting Name="MaxLineWidthInPixels" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1024</Value>
+    </Setting>
+    <Setting Name="MaxLineWidthStyle" Type="Font_Builder.BITMAP_WIDTH_CAP_STYLE" Scope="User">
+      <Value Profile="(Default)">CAP_BY_NO_OF_CHARS</Value>
+    </Setting>
+    <Setting Name="PadBitmapToNextPowerOfTwo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="MaxLineWidthInChars" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">16</Value>
+    </Setting>
+    <Setting Name="BitmapBackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Transparent</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
