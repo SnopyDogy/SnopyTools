@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.m_oFontComboBox = new System.Windows.Forms.ComboBox();
             this.m_oStyleComboBox = new System.Windows.Forms.ComboBox();
             this.m_oSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -46,6 +47,7 @@
             this.m_oFontDataExportButton = new System.Windows.Forms.Button();
             this.m_oSampleLabel = new System.Windows.Forms.Label();
             this.m_oColorDialog = new System.Windows.Forms.ColorDialog();
+            this.m_oToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // m_oFontComboBox
@@ -56,6 +58,7 @@
             this.m_oFontComboBox.Name = "m_oFontComboBox";
             this.m_oFontComboBox.Size = new System.Drawing.Size(121, 163);
             this.m_oFontComboBox.TabIndex = 0;
+            this.m_oToolTip.SetToolTip(this.m_oFontComboBox, "Select the Font");
             // 
             // m_oStyleComboBox
             // 
@@ -71,6 +74,7 @@
             this.m_oStyleComboBox.Size = new System.Drawing.Size(76, 163);
             this.m_oStyleComboBox.TabIndex = 1;
             this.m_oStyleComboBox.Text = "Regular";
+            this.m_oToolTip.SetToolTip(this.m_oStyleComboBox, "Select the Font Style");
             // 
             // m_oSizeComboBox
             // 
@@ -101,6 +105,7 @@
             this.m_oSizeComboBox.Size = new System.Drawing.Size(53, 163);
             this.m_oSizeComboBox.TabIndex = 2;
             this.m_oSizeComboBox.Text = "72";
+            this.m_oToolTip.SetToolTip(this.m_oSizeComboBox, "Select the Font Size");
             // 
             // m_oMinCharTextBox
             // 
@@ -109,6 +114,7 @@
             this.m_oMinCharTextBox.Size = new System.Drawing.Size(41, 20);
             this.m_oMinCharTextBox.TabIndex = 3;
             this.m_oMinCharTextBox.Text = "0x20";
+            this.m_oToolTip.SetToolTip(this.m_oMinCharTextBox, "Minimum (lowest) character from the ASCII Table (in Hex).");
             // 
             // m_oMaxCharTextBox
             // 
@@ -117,6 +123,7 @@
             this.m_oMaxCharTextBox.Size = new System.Drawing.Size(41, 20);
             this.m_oMaxCharTextBox.TabIndex = 4;
             this.m_oMaxCharTextBox.Text = "0x7F";
+            this.m_oToolTip.SetToolTip(this.m_oMaxCharTextBox, "Maximum (highest) character from the ASCII Table (in Hex).");
             // 
             // m_oCropCheckBox
             // 
@@ -126,6 +133,8 @@
             this.m_oCropCheckBox.Size = new System.Drawing.Size(78, 17);
             this.m_oCropCheckBox.TabIndex = 5;
             this.m_oCropCheckBox.Text = "Crop Chars";
+            this.m_oToolTip.SetToolTip(this.m_oCropCheckBox, "Crop spare space around each Char. WARNING: This destorys the \"intended\" spacing " +
+        "around the characters put there by the fonts designers.");
             this.m_oCropCheckBox.UseVisualStyleBackColor = true;
             // 
             // m_oAACheckBox
@@ -136,6 +145,7 @@
             this.m_oAACheckBox.Size = new System.Drawing.Size(77, 17);
             this.m_oAACheckBox.TabIndex = 6;
             this.m_oAACheckBox.Text = "Antialiased";
+            this.m_oToolTip.SetToolTip(this.m_oAACheckBox, "Render Characters Antialiased.");
             this.m_oAACheckBox.UseVisualStyleBackColor = true;
             // 
             // m_oColotButton
@@ -145,6 +155,7 @@
             this.m_oColotButton.Name = "m_oColotButton";
             this.m_oColotButton.Size = new System.Drawing.Size(26, 23);
             this.m_oColotButton.TabIndex = 7;
+            this.m_oToolTip.SetToolTip(this.m_oColotButton, "Change Font Color");
             this.m_oColotButton.UseVisualStyleBackColor = false;
             this.m_oColotButton.Click += new System.EventHandler(this.m_oColotButton_Click);
             // 
@@ -155,6 +166,7 @@
             this.m_oGenFontTextureButton.Size = new System.Drawing.Size(105, 23);
             this.m_oGenFontTextureButton.TabIndex = 8;
             this.m_oGenFontTextureButton.Text = "Gen Font Texture";
+            this.m_oToolTip.SetToolTip(this.m_oGenFontTextureButton, "Generates the Font Texture/Bitmap");
             this.m_oGenFontTextureButton.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -207,9 +219,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(322, 111);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(50, 13);
+            this.label6.Size = new System.Drawing.Size(49, 13);
             this.label6.TabIndex = 14;
-            this.label6.Text = "MacChar";
+            this.label6.Text = "MaxChar";
             // 
             // m_oFontDataExportButton
             // 
@@ -218,6 +230,7 @@
             this.m_oFontDataExportButton.Size = new System.Drawing.Size(105, 23);
             this.m_oFontDataExportButton.TabIndex = 15;
             this.m_oFontDataExportButton.Text = "Exprot Font Data";
+            this.m_oToolTip.SetToolTip(this.m_oFontDataExportButton, "Exprots the Font Data (UV Coords, etc.) to XML.");
             this.m_oFontDataExportButton.UseVisualStyleBackColor = true;
             // 
             // m_oSampleLabel
@@ -227,6 +240,7 @@
             this.m_oSampleLabel.Size = new System.Drawing.Size(296, 181);
             this.m_oSampleLabel.TabIndex = 16;
             this.m_oSampleLabel.Text = "The quick brown fox jumped over the LAZY camel";
+            this.m_oToolTip.SetToolTip(this.m_oSampleLabel, "Preview Box");
             // 
             // m_oColorDialog
             // 
@@ -290,5 +304,6 @@
         private System.Windows.Forms.Button m_oFontDataExportButton;
         private System.Windows.Forms.Label m_oSampleLabel;
         private System.Windows.Forms.ColorDialog m_oColorDialog;
+        private System.Windows.Forms.ToolTip m_oToolTip;
     }
 }
